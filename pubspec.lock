@@ -189,10 +189,17 @@ packages:
     dependency: "direct main"
     description:
       name: dart_webrtc
+<<<<<<< Updated upstream
       sha256: "3bfa069a8b14a53ba506f6dd529e9b88c878ba0cc238f311051a39bf1e53d075"
       url: "https://pub.dev"
     source: hosted
     version: "1.5.3+hotfix.5"
+=======
+      sha256: a2ae542cdadc21359022adedc26138fa3487cc3b3547c24ff4f556681869e28c
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.3+hotfix.4"
+>>>>>>> Stashed changes
   dbus:
     dependency: transitive
     description:
@@ -268,6 +275,7 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_webrtc
+<<<<<<< Updated upstream
       sha256: "945d0a38b90fbca8257eadb167d8fb9fa7075d9a1939fd2953c10054454d1de2"
       url: "https://pub.dev"
     source: hosted
@@ -280,6 +288,12 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+=======
+      sha256: "69095ba39b83da3de48286dfc0769aa8e9f10491f70058dc8d8ecc960ef7a260"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+>>>>>>> Stashed changes
   glob:
     dependency: transitive
     description:

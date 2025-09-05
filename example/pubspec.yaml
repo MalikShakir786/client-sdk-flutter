@@ -24,6 +24,8 @@ dependencies:
 
   livekit_client:
     path: ../
+  dart_jsonwebtoken: ^3.2.0
+  rename: ^3.1.0
 
 dev_dependencies:
   flutter_test:

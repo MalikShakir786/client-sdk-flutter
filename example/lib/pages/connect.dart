@@ -12,7 +12,10 @@ class ConnectPage extends StatefulWidget {
   //
   const ConnectPage({
     super.key,
+    required this.token,
   });
+
+  final String token;
 
   @override
   State<StatefulWidget> createState() => _ConnectPageState();
@@ -76,6 +79,9 @@ class _ConnectPageState extends State<ConnectPage> {
     if (status.isPermanentlyDenied) {
       print('Microphone Permission disabled');
     }
+
+    _uriCtrl.text = 'wss://softseer-8hckbhem.livekit.cloud';
+    _tokenCtrl.text = widget.token ?? 'No Token';
   }
 
   // Read saved URL and Token
@@ -129,24 +135,25 @@ class _ConnectPageState extends State<ConnectPage> {
       var token = _tokenCtrl.text;
       var e2eeKey = _sharedKeyCtrl.text;
 
-      await Navigator.push<void>(
-        ctx,
-        MaterialPageRoute(
-            builder: (_) => PreJoinPage(
-                  args: JoinArgs(
-                    url: url,
-                    token: token,
-                    e2ee: _e2ee,
-                    e2eeKey: e2eeKey,
-                    simulcast: _simulcast,
-                    adaptiveStream: _adaptiveStream,
-                    dynacast: _dynacast,
-                    preferredCodec: _preferredCodec,
-                    enableBackupVideoCodec:
-                        ['VP9', 'AV1'].contains(_preferredCodec),
-                  ),
-                )),
-      );
+      try{
+        await Navigator.push(context, MaterialPageRoute(builder: (context)=> PreJoinPage(
+          args: JoinArgs(
+            url: url,
+            token: token,
+            e2ee: _e2ee,
+            e2eeKey: e2eeKey,
+            simulcast: _simulcast,
+            adaptiveStream: _adaptiveStream,
+            dynacast: _dynacast,
+            preferredCodec: _preferredCodec,
+            enableBackupVideoCodec:
+            ['VP9', 'AV1'].contains(_preferredCodec),
+          ),
+        )));
+      } catch (e, stack) {
+        print('Navigation Error: $e\n$stack');
+      }
+
     } catch (error) {
       print('Could not connect $error');
       await ctx.showErrorDialog(error);
@@ -194,49 +201,116 @@ class _ConnectPageState extends State<ConnectPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: Container(
-          alignment: Alignment.center,
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 20,
+    body: Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 20,
+          ),
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 70),
+                child: SvgPicture.asset(
+                  'images/logo-dark.svg',
+                ),
               ),
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 70),
-                    child: SvgPicture.asset(
-                      'images/logo-dark.svg',
+              Padding(
+                padding: const EdgeInsets.only(bottom: 25),
+                child: LKTextField(
+                  label: 'Server URL',
+                  ctrl: _uriCtrl,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 25),
+                child: LKTextField(
+                  label: 'Token',
+                  ctrl: _tokenCtrl,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 25),
+                child: LKTextField(
+                  label: 'Shared Key',
+                  ctrl: _sharedKeyCtrl,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('E2EE'),
+                    Switch(
+                      value: _e2ee,
+                      onChanged: (value) => _setE2EE(value),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 25),
-                    child: LKTextField(
-                      label: 'Server URL',
-                      ctrl: _uriCtrl,
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Simulcast'),
+                    Switch(
+                      value: _simulcast,
+                      onChanged: (value) => _setSimulcast(value),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 25),
-                    child: LKTextField(
-                      label: 'Token',
-                      ctrl: _tokenCtrl,
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Adaptive Stream'),
+                    Switch(
+                      value: _adaptiveStream,
+                      onChanged: (value) => _setAdaptiveStream(value),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 25),
-                    child: LKTextField(
-                      label: 'Shared Key',
-                      ctrl: _sharedKeyCtrl,
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Dynacast'),
+                    Switch(
+                      value: _dynacast,
+                      onChanged: (value) => _setDynacast(value),
                     ),
-                  ),
-                  Padding(
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: _multiCodec ? 5 : 25),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Multi Codec'),
+                    Switch(
+                      value: _multiCodec,
+                      onChanged: (value) => _setMultiCodec(value),
+                    ),
+                  ],
+                ),
+              ),
+              if (_multiCodec)
+                Padding(
                     padding: const EdgeInsets.only(bottom: 5),
                     child: Row(
+<<<<<<< Updated upstream
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('E2EE'),
@@ -354,16 +428,68 @@ class _ConnectPageState extends State<ConnectPage> {
                                 color: Colors.white,
                                 strokeWidth: 2,
                               ),
+=======
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Preferred Codec:'),
+                          DropdownButton<String>(
+                            value: _preferredCodec,
+                            icon: const Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.blue,
+>>>>>>> Stashed changes
                             ),
+                            elevation: 16,
+                            style: const TextStyle(color: Colors.blue),
+                            underline: Container(
+                              height: 2,
+                              color: Colors.blueAccent,
+                            ),
+                            onChanged: (String? value) {
+                              // This is called when the user selects an item.
+                              setState(() {
+                                _preferredCodec = value!;
+                              });
+                            },
+                            items: [
+                              'Preferred Codec',
+                              'AV1',
+                              'VP9',
+                              'VP8',
+                              'H264'
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          )
+                        ])),
+              ElevatedButton(
+                onPressed: _busy ? null : () => _connect(context),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_busy)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: SizedBox(
+                          height: 15,
+                          width: 15,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
                           ),
-                        const Text('CONNECT'),
-                      ],
-                    ),
-                  ),
-                ],
+                        ),
+                      ),
+                    const Text('CONNECT'),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

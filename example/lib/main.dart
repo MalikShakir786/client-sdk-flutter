@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:livekit_example/pages/fields.dart';
 import 'package:livekit_example/theme.dart';
 import 'package:logging/logging.dart';
 import 'package:intl/intl.dart';
@@ -39,6 +40,7 @@ class LiveKitExampleApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
         title: 'LiveKit Flutter Example',
         theme: LiveKitTheme().buildThemeData(context),
-        home: const ConnectPage(),
+        debugShowCheckedModeBanner: false,
+        home: FieldsPage(),
       );
 }
