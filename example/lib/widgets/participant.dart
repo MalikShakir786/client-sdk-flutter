@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:livekit_client/livekit_client.dart';
+import 'package:livekit_example/ahd_camera_view.dart';
 import 'package:livekit_example/theme.dart';
 
 import 'no_video.dart';
@@ -140,12 +141,15 @@ abstract class _ParticipantWidgetState<T extends ParticipantWidget>
             // Video
             InkWell(
               onTap: () => setState(() => _visible = !_visible),
-              child: activeVideoTrack != null && !activeVideoTrack!.muted
-                  ? VideoTrackRenderer(
-                      renderMode: VideoRenderMode.auto,
-                      activeVideoTrack!,
-                    )
-                  : const NoVideoWidget(),
+              child: AHDCameraPlatformView(
+
+              )
+              // activeVideoTrack != null && !activeVideoTrack!.muted
+              //     ? VideoTrackRenderer(
+              //         renderMode: VideoRenderMode.auto,
+              //         activeVideoTrack!,
+              //       )
+              //     : const NoVideoWidget(),
             ),
             // Bottom bar
             Align(

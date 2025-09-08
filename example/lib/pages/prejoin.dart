@@ -8,6 +8,8 @@ import 'package:livekit_example/exts.dart';
 
 import '../theme.dart';
 import 'room.dart';
+import '../ahd_camera_view.dart';
+import '../ahdcamera.dart';
 
 class JoinArgs {
   JoinArgs({
@@ -63,6 +65,12 @@ class _PreJoinPageState extends State<PreJoinPage> {
     _subscription =
         Hardware.instance.onDeviceChange.stream.listen(_loadDevices);
     Hardware.instance.enumerateDevices().then(_loadDevices);
+    _initNativePreview();
+  }
+
+  Future<void> _initNativePreview() async {
+    await AHDCamera.initialize();
+    await AHDCamera.startPreview();
   }
 
   @override
@@ -154,6 +162,7 @@ class _PreJoinPageState extends State<PreJoinPage> {
   @override
   void dispose() {
     _subscription?.cancel();
+    // AHDCamera.stopPreview();
     super.dispose();
   }
 
@@ -284,22 +293,16 @@ class _PreJoinPageState extends State<PreJoinPage> {
                             child: Container(
                               alignment: Alignment.center,
                               color: Colors.black54,
-                              child: _videoTrack != null
-                                  ? VideoTrackRenderer(
-                                      renderMode: VideoRenderMode.auto,
-                                      _videoTrack!,
-                                    )
-                                  : Container(
-                                      alignment: Alignment.center,
-                                      child: LayoutBuilder(
-                                        builder: (ctx, constraints) => Icon(
-                                          Icons.videocam_off,
-                                          color: LKColors.lkBlue,
-                                          size: math.min(constraints.maxHeight,
-                                                  constraints.maxWidth) *
-                                              0.3,
-                                        ),
-                                      ),
+                              child:
+                              // _videoTrack != null
+                              //     ? VideoTrackRenderer(
+                              //         renderMode: VideoRenderMode.auto,
+                              //         _videoTrack!,
+                              //       )
+                              //     :
+                              AHDCameraPlatformView(
+                                      width: 320,
+                                      height: 240,
                                     ),
                             ))),
                     Padding(
